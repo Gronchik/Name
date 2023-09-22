@@ -8,6 +8,10 @@ from aiogram.dispatcher.webhook import SendMessage  # bot.send_message(p1, p1, .
 
 API_TOKEN = bot_Token
 WEBHOOK_URL = 'https://whrthwwt34.ru/WebHook'
+WEBHOOK_HOST = "https://whrthwwt34.ru"
+WEBHOOK_PATH = ""
+WEBAPP_HOST = "46.17.250.85"
+WEBAPP_PORT = 8000
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
@@ -31,7 +35,16 @@ if __name__ == '__main__':
     from aiogram import executor
     executor.start_polling(dp, skip_updates=True)
 
+if __name__ == 'main':
+    start_webhook(
+        dispatcher=dp,
+        webhook_path=WEBHOOK_PATH,
+        on_startup=on_start,
+        on_shutdown=on_exit,
 
+        host=WEBAPP_HOST,
+        port=WEBAPP_PORT
+    )
 
 
 
