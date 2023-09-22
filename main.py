@@ -18,12 +18,12 @@ dp = Dispatcher(bot)
 logging.basicConfig(level=logging.INFO)
 dp.middleware.setup(LoggingMiddleware())
 
-async def on_start(disp):
+async def on_start(dp):
     print('SERVER IS START')
     await bot.set_webhook(WEBHOOK_URL)
 
 
-async def on_exit(disp):
+async def on_exit(dp):
     await bot.delete_webhook()
 
 
