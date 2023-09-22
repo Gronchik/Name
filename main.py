@@ -31,10 +31,6 @@ async def on_exit(disp):
 async def send_welcome(message: types.Message):
     await message.answer("Привет! Я бот.")
 
-if __name__ == '__main__':
-    from aiogram import executor
-    executor.start_polling(dp, skip_updates=True)
-
 if __name__ == 'main':
     start_webhook(
         dispatcher=dp,
