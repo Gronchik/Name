@@ -1,1 +1,0 @@
-bot_Token = '6488026924:AAEXPLxJaQcQRohg0UTkYRcqlVbth71PSo4'
