@@ -3,6 +3,8 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
 import logging
+from aiogram.utils.executor import start_webhook
+from aiogram.dispatcher.webhook import SendMessage  # bot.send_message(p1, p1, ...)
 
 API_TOKEN = bot_Token
 WEBHOOK_URL = 'https://whrthwwt34.ru/WebHook'
@@ -11,6 +13,15 @@ bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 logging.basicConfig(level=logging.INFO)
 dp.middleware.setup(LoggingMiddleware())
+
+async def on_start(disp):
+    print('SERVER IS START')
+    await bot.set_webhook(WEBHOOK_URL)
+
+
+async def on_exit(disp):
+    await bot.delete_webhook()
+
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
