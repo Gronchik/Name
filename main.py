@@ -2,57 +2,51 @@ from Secure import bot_Token, webHook_URL
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.utils import executor
-import logging
-from aiogram.utils.executor import start_webhook
-from aiogram.dispatcher.webhook import SendMessage  # bot.send_message(p1, p1, ...)
-from flask import Flask, request, Response
+import ssl
+from aiogram import executor
 
-app = Flask(__name__)
+# Путь к SSL-сертификату и закрытому ключу
+certfile = '/etc/letsencrypt/live/whrthwwt34.ru/cert.pe'
+keyfile = '/etc/letsencrypt/live/whrthwwt34.ru/privkey.pem'
 
-@app.route('/',methods=['POST', 'GET'])
-def index():
-    return '<h1>Privetic<h1>'
+# Создание объекта SSLContext
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+ssl_context.load_cert_chain(certfile=certfile, keyfile=keyfile)
 
-API_TOKEN = bot_Token
-WEBHOOK_URL = 'https://whrthwwt34.ru'
-WEBHOOK_HOST = "https://whrthwwt34.ru"
-WEBHOOK_PATH = ""
-WEBAPP_HOST = "http://localhost"
-WEBAPP_PORT = 8000
-
-bot = Bot(token=API_TOKEN)
+bot = Bot(token=bot_Token)
 dp = Dispatcher(bot)
-logging.basicConfig(level=logging.INFO)
 dp.middleware.setup(LoggingMiddleware())
 
-async def on_start(dp):
-    print('SERVER IS START')
-    await bot.set_webhook(WEBHOOK_URL)
+# Задайте путь, на который будут приходить обновления от Telegram
+WEBHOOK_PATH = "/webhook"
+
+# Настройте WebHook
+WEBAPP_HOST = "127.0.0.1"  # Прослушивайте все входящие запросы
+WEBAPP_PORT = 8000  # Порт, на котором будет запущено ваше приложение
+
+# Установите URL WebHook
+WEBHOOK_URL = f"https://whrthwwt34.ru{WEBHOOK_PATH}"
 
 
-async def on_exit(dp):
-    await bot.delete_webhook()
-
-
-@dp.message_handler(commands=['start', 'help'])
-async def send_welcome(message: types.Message):
+@dp.message_handler(commands=['start'])
+async def start(message: types.Message):
     await message.answer("Привет! Я бот.")
 
-app.run()
+
+async def sstartup(dp):
+    await bot.send_message(chat_id="Ваш_чат_id", text="Бот запущен")
 
 
-# start_webhook(
-#     dispatcher=dp,
-#     webhook_path=WEBHOOK_PATH,
-#     on_startup=on_start,
-#     on_shutdown=on_exit,
-#     host=WEBAPP_HOST,
-#     port=WEBAPP_PORT
-#     )
-
-
-
-
+if __name__ == '__main__':
+    executor.start_webhook(
+        dp,
+        on_startup=sstartup,
+        skip_updates=True,
+        host=WEBAPP_HOST,
+        port=WEBAPP_PORT,
+        webhook_path=WEBHOOK_PATH,
+        ssl_context=ssl_context,
+    )
 
 # from Secure import bot_Token
 # from aiogram import Bot, Dispatcher, types
