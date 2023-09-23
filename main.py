@@ -5,6 +5,13 @@ from aiogram.utils import executor
 import logging
 from aiogram.utils.executor import start_webhook
 from aiogram.dispatcher.webhook import SendMessage  # bot.send_message(p1, p1, ...)
+from flask import Flask, request, Response
+
+app = Flask(__name__)
+
+@app.route('/',methods=['POST', 'GET'])
+def index():
+    return '<h1>Privetic<h1>'
 
 API_TOKEN = bot_Token
 WEBHOOK_URL = 'https://whrthwwt34.ru'
@@ -31,15 +38,17 @@ async def on_exit(dp):
 async def send_welcome(message: types.Message):
     await message.answer("Привет! Я бот.")
 
+app.run()
 
-start_webhook(
-    dispatcher=dp,
-    webhook_path=WEBHOOK_PATH,
-    on_startup=on_start,
-    on_shutdown=on_exit,
-    host=WEBAPP_HOST,
-    port=WEBAPP_PORT
-    )
+
+# start_webhook(
+#     dispatcher=dp,
+#     webhook_path=WEBHOOK_PATH,
+#     on_startup=on_start,
+#     on_shutdown=on_exit,
+#     host=WEBAPP_HOST,
+#     port=WEBAPP_PORT
+#     )
 
 
 
