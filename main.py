@@ -7,10 +7,10 @@ from aiogram.utils.executor import start_webhook
 from aiogram.dispatcher.webhook import SendMessage  # bot.send_message(p1, p1, ...)
 
 API_TOKEN = bot_Token
-WEBHOOK_URL = 'https://whrthwwt34.ru/WebHook'
+WEBHOOK_URL = 'https://whrthwwt34.ru'
 WEBHOOK_HOST = "https://whrthwwt34.ru"
 WEBHOOK_PATH = ""
-WEBAPP_HOST = "46.17.250.85"
+WEBAPP_HOST = "http://localhost"
 WEBAPP_PORT = 8000
 
 bot = Bot(token=API_TOKEN)
