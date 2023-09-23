@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="722f1f6d-61cf-418b-b2f6-ab1ec041af78" name="Changes" comment="WebHook 5">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SSL/certificate.csr" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SSL/certificate.der" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SSL/certificate_ca.crt" beforeDir="false" />
+    <list default="true" id="722f1f6d-61cf-418b-b2f6-ab1ec041af78" name="Changes" comment="WebHook 6">
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -160,7 +156,14 @@
       <option name="project" value="LOCAL" />
       <updated>1695423953643</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="WebHook 6">
+      <created>1695434588575</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1695434588575</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -170,6 +173,7 @@
     <MESSAGE value="WebHook 3" />
     <MESSAGE value="WebHook 4" />
     <MESSAGE value="WebHook 5" />
-    <option name="LAST_COMMIT_MESSAGE" value="WebHook 5" />
+    <MESSAGE value="WebHook 6" />
+    <option name="LAST_COMMIT_MESSAGE" value="WebHook 6" />
   </component>
 </project>

@@ -31,15 +31,14 @@ async def on_exit(dp):
 async def send_welcome(message: types.Message):
     await message.answer("Привет! Я бот.")
 
-if __name__ == 'main':
-    start_webhook(
-        dispatcher=dp,
-        webhook_path=WEBHOOK_PATH,
-        on_startup=on_start,
-        on_shutdown=on_exit,
 
-        host=WEBAPP_HOST,
-        port=WEBAPP_PORT
+start_webhook(
+    dispatcher=dp,
+    webhook_path=WEBHOOK_PATH,
+    on_startup=on_start,
+    on_shutdown=on_exit,
+    host=WEBAPP_HOST,
+    port=WEBAPP_PORT
     )
 
 
