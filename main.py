@@ -1,52 +1,47 @@
-from Secure import bot_Token, webHook_URL
+from Secure import bot_Token
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.middlewares.logging import LoggingMiddleware
-from aiogram.utils import executor
-import ssl
-from aiogram import executor
+from aiogram.dispatcher.webhook import get_new_configured_app
 
-# Путь к SSL-сертификату и закрытому ключу
-certfile = '/etc/letsencrypt/live/whrthwwt34.ru/cert.pe'
-keyfile = '/etc/letsencrypt/live/whrthwwt34.ru/privkey.pem'
+API_TOKEN = bot_Token
+WEBAPP_HOST = 'localhost'
+WEBAPP_PORT = 3001
+WEBHOOK_PATH = f"/webhook/{API_TOKEN}"
+WEBAPP_URL = f"https://{WEBAPP_HOST}:{WEBAPP_PORT}"
 
-# Создание объекта SSLContext
-ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-ssl_context.load_cert_chain(certfile=certfile, keyfile=keyfile)
-
-bot = Bot(token=bot_Token)
+bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 dp.middleware.setup(LoggingMiddleware())
 
-# Задайте путь, на который будут приходить обновления от Telegram
-WEBHOOK_PATH = "/webhook"
-
-# Настройте WebHook
-WEBAPP_HOST = "127.0.0.1"  # Прослушивайте все входящие запросы
-WEBAPP_PORT = 8000  # Порт, на котором будет запущено ваше приложение
-
-# Установите URL WebHook
-WEBHOOK_URL = f"https://whrthwwt34.ru{WEBHOOK_PATH}"
+app = get_new_configured_app(dispatcher=dp, path=WEBHOOK_PATH)
 
 
-@dp.message_handler(commands=['start'])
-async def start(message: types.Message):
-    await message.answer("Привет! Я бот.")
-
-
-async def sstartup(dp):
-    await bot.send_message(chat_id="Ваш_чат_id", text="Бот запущен")
+async def on_startup(dp):
+    await bot.set_webhook(WEBAPP_URL + WEBHOOK_PATH)
 
 
 if __name__ == '__main__':
+    from aiogram import executor
+
     executor.start_webhook(
-        dp,
-        on_startup=sstartup,
-        skip_updates=True,
-        host=WEBAPP_HOST,
-        port=WEBAPP_PORT,
-        webhook_path=WEBHOOK_PATH,
-        ssl_context=ssl_context,
+        app,
+        on_startup=on_startup,
+        skip_updates=True
     )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # from Secure import bot_Token
 # from aiogram import Bot, Dispatcher, types
