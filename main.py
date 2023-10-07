@@ -1,106 +1,61 @@
+from Keyboards import menuKeyboard, mainMenuKeyboard
+from Functions import stickerStats
+from DBase import bdCheckId, bdPasteUser, bdChangeStats, bdStatistic
 from Secure import bot_Token
+from aiogram.dispatcher.filters import Text
 from aiogram import Bot, Dispatcher, types
-from aiogram.contrib.middlewares.logging import LoggingMiddleware
-from aiogram.dispatcher.webhook import get_new_configured_app
+from aiogram import executor
 
-API_TOKEN = bot_Token
-WEBAPP_HOST = 'localhost'
-WEBAPP_PORT = 3001
-WEBHOOK_PATH = f"/webhook/{API_TOKEN}"
-WEBAPP_URL = f"https://{WEBAPP_HOST}:{WEBAPP_PORT}"
-
-bot = Bot(token=API_TOKEN)
+# Инициализация бота и диспетчера
+bot = Bot(token=bot_Token, parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot)
-dp.middleware.setup(LoggingMiddleware())
-
-app = get_new_configured_app(dispatcher=dp, path=WEBHOOK_PATH)
 
 
-async def on_startup(dp):
-    await bot.set_webhook(WEBAPP_URL + WEBHOOK_PATH)
+@dp.message_handler(Text(equals='меню', ignore_case=True))
+async def menu(message: types.Message):
+    with open("images/Items/Menu.jpg", "rb") as photo_file:
+        await bot.send_photo(message.chat.id, photo_file, caption='Меню:', reply_markup=menuKeyboard)
 
 
+# Обработчик для команды /start
+@dp.message_handler(commands=['start'])
+async def start(message: types.Message):
+    if bdCheckId(message.from_user.id):
+        await message.answer("Привет! Я бот.", reply_markup=mainMenuKeyboard)
+    else:
+        bdPasteUser(message.from_user.id)
+        await message.answer("Привет! Ты кто?", reply_markup=mainMenuKeyboard)
+
+
+@dp.message_handler(commands=['stam'])
+async def stam(message: types.Message):
+    bdChangeStats(message.from_user.id, stamina=-7)
+    await message.answer("-7 выносливости")
+
+
+# Обработчики CallbackQuery
+@dp.message_handler(Text(equals='магазин', ignore_case=True))
+@dp.callback_query_handler(lambda c: c.data == 'shop')
+async def shop(message: types.CallbackQuery):
+    await bot.send_message(message.from_user.id, f'Предмет ubnfhf помещён в инвентарь')
+
+
+
+@dp.callback_query_handler(lambda c: c.data == 'stats')
+async def process_callback_button2(callback: types.CallbackQuery): # Вызов меню со статистикой
+    stats = bdStatistic(callback.from_user.id)
+    img = stickerStats(stats)
+
+    await callback.message.answer(f'📊Статистика📊\n'
+                                  f'{img[0]}Здоровье: {stats[0]}\n'
+                                  f'🎿Энергия: {stats[1]}\n'
+                                  f'💰Деньги {stats[2]}\n'
+                                  f'🪪Репутация: {stats[3]}\n'
+                                  f'{img[1]}Скорость: {stats[4]}\n'
+                                  f'{img[2]}Опыт: {stats[5]}\n')
+    await callback.answer()
+
+
+# Запуск бота
 if __name__ == '__main__':
-    from aiogram import executor
-
-    executor.start_webhook(
-        app,
-        on_startup=on_startup,
-        skip_updates=True
-    )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# from Secure import bot_Token
-# from aiogram import Bot, Dispatcher, types
-# from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-#
-# # Настройки вебхука
-# WEBHOOK_HOST = 'ЗДЕСЬ АДРЕС ИЗ NGROK'  # Адрес нашего сервера
-# WEBHOOK_PATH = ''  # Путь до нашего api, где бот слушает сообщения
-# WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'  # Адрес принятия запросов к боту
-#
-#
-# # Настройка web-сервера
-# WEBAPP_HOST = 'localhost'  # Хост нашего приложения (127.0.0.1 == localhost)
-# WEBAPP_PORT = 8000  # Порт, на котором работает наше приложение
-#
-# # Инициализация бота и диспетчера
-# bot = Bot(token=bot_Token)
-# dp = Dispatcher(bot)
-#
-# # Создаем инлайн-клавиатуру с кнопкой "Кнопка 2" и указываем callback_data
-# keyboard = InlineKeyboardMarkup()
-# button2 = InlineKeyboardButton("Кнопка 2", callback_data="button2")
-# keyboard.add(button2)
-#
-#
-# # Обработчик для входящих запросов типа CallbackQuery
-# @dp.callback_query_handler(lambda c: c.data == 'button2')
-# async def process_callback_button2(callback_query: types.CallbackQuery):
-#     # Извлекаем данные из callback_query
-#     callback_data = callback_query.data
-#
-#     # Выполняем необходимые действия в ответ на нажатие кнопки
-#     # Например, отправляем сообщение пользователю
-#     await callback_query.answer(f'Предмет ubnfhf помещён в инвентарь')
-#
-#
-# @dp.message_handler(lambda message: message.text.lower() == 'меню')
-# async def menu(message: types.Message):
-#     with open("images/Items/benzin.jpg", "rb") as photo_file:
-#         await bot.send_photo(message.chat.id, photo_file, caption='Меню:', reply_markup=keyboard)
-#
-# # Обработчик для команды /start
-# @dp.message_handler(commands=['start'])
-# async def start(message: types.Message):
-#     await message.answer("Привет! Я бот.", reply_markup=keyboard)
-#
-#
-# @dp.message_handler(commands=['send_photo'])
-# async def send_photo(message: types.Message):
-#     # Отправляем текстовое сообщение
-#     await message.answer("Вот ваше фото:")
-#
-#     # Отправляем фото вместе с текстом
-#     with open("images/Items/benzin.jpg", "rb") as photo_file:
-#         await bot.send_photo(message.chat.id, photo_file, caption="Подпись к фото")
-#
-#
-# # Запуск бота
-# if __name__ == '__main__':
-#     from aiogram import executor
-#
-#     executor.start_polling(dp, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True)
